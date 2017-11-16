@@ -98,8 +98,15 @@ defimpl DBConnection.Query, for: Mariaex.Query do
 
   defp encode_param(nil, _binary_as),
     do: {1, :field_type_null, ""}
-  defp encode_param(bin, binary_as) when is_binary(bin),
-    do: {0, binary_as, << to_length_encoded_integer(byte_size(bin)) :: binary, bin :: binary >>}
+  defp encode_param(bin, binary_as) when is_binary(bin) do
+    require Logger
+    Logger.error("Bin is #{bin}")
+    Logger.error("Binary_as is #{binary_as}")
+    Logger.error("Bin is #{byte_size(bin)}")
+    a = {0, binary_as, << to_length_encoded_integer(byte_size(bin)) :: binary, bin :: binary >>}
+    Logger.error("Result is #{inspect(a)}")
+    a
+  end
   defp encode_param(int, _binary_as) when is_integer(int),
     do: {0, :field_type_longlong, << int :: 64-little >>}
   defp encode_param(float, _binary_as) when is_float(float),
